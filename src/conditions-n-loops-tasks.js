@@ -434,10 +434,22 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
-}
+function sortByAsc(arr) {
+  const arrayLength = arr.length;
+  const newArr = arr;
 
+  for (let i = 0; i < arrayLength - 1; i += 1) {
+    for (let j = 0; j < arrayLength - i - 1; j += 1) {
+      if (arr[j] > newArr[j + 1]) {
+        const temp = newArr[j];
+        newArr[j] = newArr[j + 1];
+        newArr[j + 1] = temp;
+      }
+    }
+  }
+
+  return newArr;
+}
 /**
  * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
  * Take into account that the string can be very long and the number of iterations is large. Consider how you can optimize your solution.
@@ -505,8 +517,57 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(input) {
+  const originalNumber = input;
+  const digitsArray = [];
+  let tempOriginalNumber = originalNumber;
+  let numDigits = 0;
+
+  while (tempOriginalNumber > 0) {
+    digitsArray.unshift(tempOriginalNumber % 10);
+    tempOriginalNumber = Math.floor(tempOriginalNumber / 10);
+    numDigits += 1;
+  }
+
+  let pivotIndex;
+  for (pivotIndex = numDigits - 2; pivotIndex >= 0; pivotIndex -= 1) {
+    if (digitsArray[pivotIndex] < digitsArray[pivotIndex + 1]) {
+      break;
+    }
+  }
+
+  if (pivotIndex < 0) return originalNumber;
+
+  let nextLargerIndex = pivotIndex + 1;
+  for (let j = pivotIndex + 1; j < numDigits; j += 1) {
+    if (
+      digitsArray[j] > digitsArray[pivotIndex] &&
+      digitsArray[j] < digitsArray[nextLargerIndex]
+    ) {
+      nextLargerIndex = j;
+    }
+  }
+
+  const temp = digitsArray[pivotIndex];
+  digitsArray[pivotIndex] = digitsArray[nextLargerIndex];
+  digitsArray[nextLargerIndex] = temp;
+
+  for (let j = pivotIndex + 1; j < numDigits - 1; j += 1) {
+    for (let k = j + 1; k < numDigits; k += 1) {
+      if (digitsArray[j] > digitsArray[k]) {
+        const tempRight = digitsArray[j];
+        digitsArray[j] = digitsArray[k];
+        digitsArray[k] = tempRight;
+      }
+    }
+  }
+
+  let resultNumber = 0;
+  for (let j = 0; j < numDigits; j += 1) {
+    resultNumber = resultNumber * 10 + digitsArray[j];
+  }
+
+  return resultNumber;
 }
 
 module.exports = {
